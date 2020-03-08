@@ -1,0 +1,19 @@
+version: '3'
+services:
+  scheduler-mongodb:
+    image: mongo:4.2.0
+    environment:
+      - MONGO_DATA_DIR=/data/db
+    volumes:
+      - scheduler-mongodb-storage:/data/db
+    ports:
+      - 27017:27017
+  scheduler:
+    image: francescorivola/tribeca-scheduler:latest
+    environment:
+      - MONGODB_URL=mongodb://scheduler-mongodb:27017
+      - HTTP_HOST=0.0.0.0
+    ports:
+      - "8888:8888"
+volumes:
+  scheduler-mongodb-storage:
