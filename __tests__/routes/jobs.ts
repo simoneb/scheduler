@@ -317,7 +317,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.method should match pattern \"^GET|POST|PATCH|PUT|DELETE$\"' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.method should be equal to one of the allowed values' }));
         });
 
         it('should return 201 with created job when request is valid', async () => {

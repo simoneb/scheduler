@@ -4,7 +4,7 @@ export type Job = {
     nextRunAt: Date,
     target: {
         url: string;
-        method: string;
+        method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
         headers?: {
             [key: string]: string;
         },

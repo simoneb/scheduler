@@ -9,7 +9,7 @@ const jobTargetSchema = {
         url: { type: 'string', format: 'url' },
         method: {
             type: 'string',
-            pattern: '^GET|POST|PATCH|PUT|DELETE$'
+            enum: ['GET','POST','PATCH','PUT','DELETE']
         },
         headers: { type: 'object' },
         body: {
