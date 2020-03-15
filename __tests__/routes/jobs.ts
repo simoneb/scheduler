@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import config from '../../src/config';
 import { buildApp } from '../../src/app';
 
-describe.skip('jobs', () => {
+describe('jobs', () => {
     let app;
     let server;
 
@@ -30,7 +30,7 @@ describe.skip('jobs', () => {
             });
             expect(createResponse.statusCode).toBe(201);
             expect(createResponse.headers['content-type']).toBe('application/json; charset=utf-8');
-            const createdjob = JSON.parse(createResponse.payload);
+            const createdJob = JSON.parse(createResponse.payload);
 
             const response = await server.inject({
                 method: 'GET',
@@ -41,7 +41,7 @@ describe.skip('jobs', () => {
             const listResponse = JSON.parse(response.payload);
             expect(listResponse.results.length).toBe(1);
             const job = listResponse.results[0];
-            expect(job).toEqual(createdjob);
+            expect(job).toEqual(createdJob);
         });
 
         it('should set next and not prev link in first page when jobs returned match page size', async () => {
@@ -166,7 +166,7 @@ describe.skip('jobs', () => {
         });
     });
 
-    describe.skip('get by id', () => {
+    describe('get by id', () => {
 
         it('should return 404 when job does not exists', async () => {
             const response = await server.inject({
@@ -189,20 +189,20 @@ describe.skip('jobs', () => {
             });
             expect(createResponse.statusCode).toBe(201);
             expect(createResponse.headers['content-type']).toBe('application/json; charset=utf-8');
-            const createdjob = JSON.parse(createResponse.payload);
+            const createdJob = JSON.parse(createResponse.payload);
 
             const response = await server.inject({
                 method: 'GET',
-                url: '/jobs/' + createdjob.id
+                url: '/jobs/' + createdJob.id
             });
             expect(response.statusCode).toBe(200);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            const getjob = JSON.parse(response.payload);
-            expect(getjob).toEqual(createdjob);
+            const getJob = JSON.parse(response.payload);
+            expect(getJob).toEqual(createdJob);
         });
     });
 
-    describe('post', () => {
+    describe.skip('post', () => {
         it('should return 400 when name is undefined', async () => {
             const response = await server.inject({
                 method: 'POST',
@@ -285,7 +285,7 @@ describe.skip('jobs', () => {
         });
 
         it('should return 409 when try to create a job with the same name', async () => {
-            const responseCreatejob = await server.inject({
+            const responseCreateJob = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
@@ -293,8 +293,8 @@ describe.skip('jobs', () => {
                     url: 'http://example.org'
                 }
             });
-            const job = JSON.parse(responseCreatejob.payload);
-            const responseCreatejob2 = await server.inject({
+            const job = JSON.parse(responseCreateJob.payload);
+            const responseCreateJob2 = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
@@ -302,10 +302,10 @@ describe.skip('jobs', () => {
                     url: 'http://example.org'
                 }
             });
-            expect(responseCreatejob2.statusCode).toBe(409);
-            expect(responseCreatejob2.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(responseCreatejob2.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
-            expect(responseCreatejob2.payload).toBe(JSON.stringify({ message: `job name must be unique and is already taken by job with id ${job.id}` }));
+            expect(responseCreateJob2.statusCode).toBe(409);
+            expect(responseCreateJob2.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(responseCreateJob2.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
+            expect(responseCreateJob2.payload).toBe(JSON.stringify({ message: `job name must be unique and is already taken by job with id ${job.id}` }));
         });
     });
 
@@ -329,17 +329,17 @@ describe.skip('jobs', () => {
             });
             expect(createResponse.statusCode).toBe(201);
             expect(createResponse.headers['content-type']).toBe('application/json; charset=utf-8');
-            const createdjob = JSON.parse(createResponse.payload);
+            const createdJob = JSON.parse(createResponse.payload);
 
             const deleteResponse = await server.inject({
                 method: 'DELETE',
-                url: '/jobs/' + createdjob.id
+                url: '/jobs/' + createdJob.id
             });
             expect(deleteResponse.statusCode).toBe(204);
 
             const getResponse = await server.inject({
                 method: 'GET',
-                url: '/jobs' + createdjob.id
+                url: '/jobs' + createdJob.id
             });
             expect(getResponse.statusCode).toBe(404);
         });

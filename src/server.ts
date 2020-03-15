@@ -8,8 +8,9 @@ import { getExternalUrl } from './utils/url';
 import InvalidOperationError from './errors/invalid-operation-error';
 import { buildAdminRoutes } from './routes/admin/admin';
 import logger from './logger';
+import { buildJobsRoutes } from './routes/jobs';
 
-export function buildServer() {
+export function buildServer(jobsService) {
 	const app = fastify({
 		logger,
 		trustProxy: config.trustedProxy
@@ -40,6 +41,7 @@ export function buildServer() {
 
 	// End points
 	app.register(buildAdminRoutes(), { prefix: '/admin' });
+	app.register(buildJobsRoutes(jobsService), { prefix: '/jobs' });
 
 	app.setNotFoundHandler(function(request, reply) {
 		// Default not found handler with preValidation and preHandler hooks
