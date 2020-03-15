@@ -3,8 +3,6 @@ import packageInfo from '../package.json';
 import fastifySwagger from 'fastify-swagger';
 import config from './config';
 import NotFoundError from './errors/not-found-error';
-import ConflictError from './errors/conflict-error';
-import { getExternalUrl } from './utils/url';
 import InvalidOperationError from './errors/invalid-operation-error';
 import { buildAdminRoutes } from './routes/admin/admin';
 import logger from './logger';
@@ -52,12 +50,6 @@ export function buildServer(jobsService) {
 		if (error instanceof NotFoundError) {
 			request.log.info(error);
 			reply.status(404).send({ message: 'Resource not found' });
-			return;
-		}
-		if (error instanceof ConflictError) {
-			request.log.info(error);
-			reply.header('Location', getExternalUrl(`${(request.raw as any).originalUrl}/${error.id}`));
-			reply.status(409).send({ message: error.message });
 			return;
 		}
 		if (error instanceof InvalidOperationError ||

@@ -299,30 +299,6 @@ describe('jobs', () => {
             expect(job.url).toBe('http://example.org');
             expect(ObjectId.isValid(job.id)).toBe(true);
         });
-
-        it('should return 409 when try to create a job with the same name', async () => {
-            const responseCreateJob = await server.inject({
-                method: 'POST',
-                url: '/jobs',
-                body: {
-                    name: 'same name',
-                    url: 'http://example.org'
-                }
-            });
-            const job = JSON.parse(responseCreateJob.payload);
-            const responseCreateJob2 = await server.inject({
-                method: 'POST',
-                url: '/jobs',
-                body: {
-                    name: 'same name',
-                    url: 'http://example.org'
-                }
-            });
-            expect(responseCreateJob2.statusCode).toBe(409);
-            expect(responseCreateJob2.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(responseCreateJob2.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
-            expect(responseCreateJob2.payload).toBe(JSON.stringify({ message: `job name must be unique and is already taken by job with id ${job.id}` }));
-        });
     });
 
     describe('delete', () => {
