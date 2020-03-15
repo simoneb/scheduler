@@ -8,7 +8,7 @@ export async function buildApp(options) {
     const db = await getAndSetupDatabase(dbClient, options.databaseName);
     const agenda = getAndSetupAgenda(db);
     await agenda.start();
-    const jobsService = buildJobsService();
+    const jobsService = buildJobsService(agenda);
     const server = buildServer(jobsService);
     return {
         async close() {

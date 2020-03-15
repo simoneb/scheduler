@@ -178,13 +178,13 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ message: 'Resource not found' }));
         });
 
-        it('should return 200 with array of jobs', async () => {
+        it('should return 200 with job info', async () => {
             const createResponse = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: 'a job',
-                    url: 'http://example.org'
+                    url: 'http://example.org',
+                    interval: '5 minutes'
                 }
             });
             expect(createResponse.statusCode).toBe(201);

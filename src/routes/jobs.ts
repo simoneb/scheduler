@@ -1,11 +1,13 @@
 import NotFoundError from "../errors/not-found-error";
 import { getNextLink, getPrevLink, getExternalUrl } from "../utils/url";
+import { JobsService } from "../services/jobs-service";
 
 const jobSchema = {
     type: 'object',
     properties: {
         id: { type: 'string' },
         url: { type: 'string' },
+        interval: { type: 'string' },
         createdAt: { type: 'string' }
     }
 };
@@ -69,12 +71,13 @@ const createSchema = {
     tags: ['jobs'],
     body: {
         type: 'object',
-        required: ['url'],
+        required: ['url', 'interval'],
         properties: {
             url: {
                 type: 'string',
                 format: 'url'
-            }
+            },
+            interval: { type: 'string' },
         }
     },
     response: {
@@ -82,7 +85,7 @@ const createSchema = {
     }
 };
 
-export function buildJobsRoutes(jobsService) {
+export function buildJobsRoutes(jobsService: JobsService) {
 
     async function list(request) {
         const { page, pageSize } = request.query;
@@ -110,8 +113,7 @@ export function buildJobsRoutes(jobsService) {
     }
 
     async function create(request, reply) {
-        const { name, url } = request.body;
-        const job = await jobsService.create({ name, url });
+        const job = await jobsService.create(request.body);
         reply.header('Location', `${getExternalUrl(request.raw.originalUrl)}/${job.id}`);
         reply.status(201).send(job);
     }
