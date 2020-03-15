@@ -3,7 +3,7 @@ import Agenda from 'agenda';
 import * as os from 'os';
 
 export async function getAndSetupAgenda(db: Db): Promise<Agenda> {
-    const agenda = new Agenda({ 
+    const agenda = new Agenda({
         processEvery: 1000,
         mongo: db
     });

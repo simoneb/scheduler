@@ -1,7 +1,7 @@
 import { toDto } from '../utils/dto';
 import Agenda from 'agenda';
 import { ObjectId } from 'mongodb';
-import { Job } from '../models/Job';
+import { Job } from '../models/job';
 import { jobProcessingHandler } from '../agenda';
 
 export type JobsService = {

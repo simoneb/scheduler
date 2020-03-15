@@ -1,13 +1,13 @@
-import NotFoundError from "../errors/not-found-error";
-import { getNextLink, getPrevLink, getExternalUrl } from "../utils/url";
-import { JobsService } from "../services/jobs-service";
+import NotFoundError from '../errors/not-found-error';
+import { getNextLink, getPrevLink, getExternalUrl } from '../utils/url';
+import { JobsService } from '../services/jobs-service';
 
 const jobTargetSchema = {
     type: 'object',
-    required: ['url','method'],
+    required: ['url', 'method'],
     properties: {
         url: { type: 'string', format: 'url' },
-        method: { 
+        method: {
             type: 'string',
             pattern: '^GET|POST|PATCH|PUT|DELETE$'
         },
@@ -16,7 +16,7 @@ const jobTargetSchema = {
             type: 'object'
         }
     }
-}
+};
 
 const jobSchema = {
     type: 'object',

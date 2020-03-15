@@ -244,7 +244,7 @@ describe('jobs', () => {
                         url: 'https://example.org',
                         method: 'POST',
                         headers: {
-                            'Authorization': 'apiKey 123' 
+                            'Authorization': 'apiKey 123'
                         },
                         body: {}
                     }
