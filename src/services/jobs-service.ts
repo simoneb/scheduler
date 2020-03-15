@@ -19,10 +19,10 @@ export function buildJobsService(agenda: Agenda): JobsService {
             return jobs.slice((page - 1) * pageSize, page * pageSize).map(toDto);
         },
         async create(job: Job): Promise<Job> {
-            const { interval, url } = job;
+            const { interval, target } = job;
             const jobName = new ObjectId().toHexString();
             agenda.define(jobName, jobProcessingHandler);
-            const createdJob = await agenda.every(interval, jobName, { url });
+            const createdJob = await agenda.every(interval, jobName, target);
             return toDto(createdJob);
         },
         async getById(id: string): Promise<Job> {

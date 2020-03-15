@@ -5,6 +5,18 @@ export function toDto(item: Agenda.Job<JobAttributesData>): Job {
     if (!item) {
         return item;
     }
-    const { _id, ...rest } = item.attrs;
-    return { url: rest.data.url, id: _id.toString(), interval: rest.repeatInterval.toString() };
+    const { attrs } = item;
+    const { _id, data, repeatInterval, nextRunAt } = attrs;
+    const { url, method, headers, body } = data;
+    return { 
+        id: _id.toString(),
+        interval: repeatInterval.toString(),
+        nextRunAt,
+        target: {
+            url,
+            method,
+            headers,
+            body
+        }
+    };
 }

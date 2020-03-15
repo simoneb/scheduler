@@ -27,8 +27,11 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    url: 'http://example.org',
-                    interval: '5 minutes'
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
                 }
             });
             expect(createResponse.statusCode).toBe(201);
@@ -52,8 +55,11 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    url: 'http://example.org',
-                    interval: '5 minutes'
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
                 }
             })));
             const response = await server.inject({
@@ -70,8 +76,11 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    url: 'http://example.org',
-                    interval: '5 minutes'
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
                 }
             })));
             const response = await server.inject({
@@ -88,8 +97,11 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    url: 'http://example.org',
-                    interval: '5 minutes'
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
                 }
             })));
             const response = await server.inject({
@@ -199,8 +211,11 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    url: 'http://example.org',
-                    interval: '5 minutes'
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
                 }
             });
             expect(createResponse.statusCode).toBe(201);
@@ -218,14 +233,14 @@ describe('jobs', () => {
         });
     });
 
-    describe.skip('post', () => {
-        it('should return 400 when name is undefined', async () => {
+    describe('post', () => {
+        it('should return 400 when interval is undefined', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: undefined,
-                    callback: {
+                    interval: undefined,
+                    target: {
                         url: 'https://example.org',
                         method: 'POST',
                         headers: {
@@ -237,49 +252,72 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'name\'' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'interval\'' }));
         });
 
-        it('should return 400 when url is undefined', async () => {
+        it('should return 400 when target is undefined', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: 'a job',
-                    url: undefined
+                    interval: '5 minutes',
+                    target: undefined
                 }
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'url\'' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'target\'' }));
         });
 
-        it('should return 400 when url is not valid', async () => {
+        it('should return 400 when target.url is undefined', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: 'a job',
-                    url: 'a non valid url'
+                    interval: '5 minutes',
+                    target: {
+                        url: undefined,
+                        method: 'GET'
+                    }
                 }
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.url should match format "url"' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target should have required property \'url\'' }));
         });
 
-        it('should return 400 when name is longer than 100 characters', async () => {
+        it('should return 400 when target.url is not valid', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: 'a'.repeat(101),
-                    url: 'https://example.org'
+                    interval: '5 minutes',
+                    target: {
+                        url: 'a non valid url',
+                        method: 'GET'
+                    }
                 }
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.name should NOT be longer than 100 characters' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.url should match format "url"' }));
+        });
+
+        it('should return 400 when target.method is not GET, POST, PATCH, PUT nor DELETE', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GUT'
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.method should match pattern \"^GET|POST|PATCH|PUT|DELETE$\"' }));
         });
 
         it('should return 201 with created job when request is valid', async () => {
@@ -287,16 +325,20 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: 'a job',
-                    url: 'http://example.org'
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
                 }
             });
             expect(response.statusCode).toBe(201);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
             const job = JSON.parse(response.payload);
             expect(response.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
-            expect(job.name).toBe('a job');
-            expect(job.url).toBe('http://example.org');
+            expect(job.interval).toBe('5 minutes');
+            expect(job.target.url).toBe('https://example.org');
+            expect(job.target.method).toBe('GET');
             expect(ObjectId.isValid(job.id)).toBe(true);
         });
     });
@@ -323,8 +365,11 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    url: 'http://example.org',
-                    interval: '5 minutes'
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
                 }
             });
             expect(createResponse.statusCode).toBe(201);

@@ -2,13 +2,29 @@ import NotFoundError from "../errors/not-found-error";
 import { getNextLink, getPrevLink, getExternalUrl } from "../utils/url";
 import { JobsService } from "../services/jobs-service";
 
+const jobTargetSchema = {
+    type: 'object',
+    required: ['url','method'],
+    properties: {
+        url: { type: 'string', format: 'url' },
+        method: { 
+            type: 'string',
+            pattern: '^GET|POST|PATCH|PUT|DELETE$'
+        },
+        headers: { type: 'object' },
+        body: {
+            type: 'object'
+        }
+    }
+}
+
 const jobSchema = {
     type: 'object',
     properties: {
         id: { type: 'string' },
-        url: { type: 'string' },
         interval: { type: 'string' },
-        createdAt: { type: 'string' }
+        nextRunAt: { type: 'string' },
+        target: jobTargetSchema
     }
 };
 
@@ -71,13 +87,10 @@ const createSchema = {
     tags: ['jobs'],
     body: {
         type: 'object',
-        required: ['url', 'interval'],
+        required: ['interval', 'target'],
         properties: {
-            url: {
-                type: 'string',
-                format: 'url'
-            },
             interval: { type: 'string' },
+            target: jobTargetSchema
         }
     },
     response: {
