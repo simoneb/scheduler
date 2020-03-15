@@ -348,14 +348,14 @@ describe('jobs', () => {
                         url: 'https://example.org',
                         method: 'GET',
                         headers: {
-                            a: 2
+                            a: ['a', 'b']
                         }
                     }
                 }
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.method should be equal to one of the allowed values' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.headers[\'a\'] should be string' }));
         });
 
         it('should return 201 with created job when request is valid', async () => {
