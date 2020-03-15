@@ -11,9 +11,13 @@ const jobTargetSchema = {
             type: 'string',
             enum: ['GET','POST','PATCH','PUT','DELETE']
         },
-        headers: { type: 'object' },
+        headers: { 
+            type: 'object',
+            additionalProperties: { type: 'string' }
+        },
         body: {
-            type: 'object'
+            type: 'object',
+            additionalProperties: true
         }
     }
 };

@@ -320,6 +320,44 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.method should be equal to one of the allowed values' }));
         });
 
+        it('should return 400 when target.header if not an object', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET',
+                        headers: 2
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.headers should be object' }));
+        });
+
+        it('should return 400 when target.header is not in form of string dictionary', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET',
+                        headers: {
+                            a: 2
+                        }
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.method should be equal to one of the allowed values' }));
+        });
+
         it('should return 201 with created job when request is valid', async () => {
             const response = await server.inject({
                 method: 'POST',
@@ -328,7 +366,14 @@ describe('jobs', () => {
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
-                        method: 'GET'
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'apiKey 123456',
+                            'X-Header': 'hi'
+                        },
+                        body: {
+                            message: 'hello world'
+                        }
                     }
                 }
             });
@@ -338,7 +383,14 @@ describe('jobs', () => {
             expect(response.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
             expect(job.interval).toBe('5 minutes');
             expect(job.target.url).toBe('https://example.org');
-            expect(job.target.method).toBe('GET');
+            expect(job.target.method).toBe('POST');
+            expect(job.target.headers).toStrictEqual({
+                'Authorization': 'apiKey 123456',
+                'X-Header': 'hi'
+            });
+            expect(job.target.body).toStrictEqual({
+                message: 'hello world'
+            });
             expect(ObjectId.isValid(job.id)).toBe(true);
         });
     });
