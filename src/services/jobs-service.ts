@@ -2,6 +2,7 @@ import { toDto } from '../utils/dto';
 import Agenda from 'agenda';
 import { ObjectId } from 'mongodb';
 import { Job } from '../models/Job';
+import { jobProcessingHandler } from '../agenda';
 
 export type JobsService = {
     list(page: number, pageSize: number): Promise<Job[]>;
@@ -12,15 +13,16 @@ export type JobsService = {
 
 export function buildJobsService(agenda: Agenda): JobsService {
 
-    const jobs: any = [];
-
     return {
         async list(page: number, pageSize: number): Promise<Job[]> {
-            return jobs.map(toDto);
+            const jobs = await agenda.jobs({});
+            return jobs.slice((page - 1) * pageSize, page * pageSize).map(toDto);
         },
         async create(job: Job): Promise<Job> {
             const { interval, url } = job;
-            const createdJob = await agenda.every(interval, 'scheduler', { url });
+            const jobName = new ObjectId().toHexString();
+            agenda.define(jobName, jobProcessingHandler);
+            const createdJob = await agenda.every(interval, jobName, { url });
             return toDto(createdJob);
         },
         async getById(id: string): Promise<Job> {
@@ -29,7 +31,10 @@ export function buildJobsService(agenda: Agenda): JobsService {
             return toDto(jobs[0]);
         },
         async deleteById(id: string): Promise<void> {
-            
+            if (!ObjectId.isValid(id)) {
+                return;
+            }
+            await agenda.cancel({ _id: ObjectId.createFromHexString(id) });
         }
     };
 }

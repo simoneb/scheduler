@@ -21,12 +21,15 @@ describe('jobs', () => {
         await app.close();
     });
 
-    describe.skip('get', () => {
+    describe('get', () => {
         it('should return 200 with array of jobs', async () => {
             const createResponse = await server.inject({
                 method: 'POST',
                 url: '/jobs',
-                body: {}
+                body: {
+                    url: 'http://example.org',
+                    interval: '5 minutes'
+                }
             });
             expect(createResponse.statusCode).toBe(201);
             expect(createResponse.headers['content-type']).toBe('application/json; charset=utf-8');
@@ -48,15 +51,18 @@ describe('jobs', () => {
             await Promise.all([1, 2, 3, 4, 5].map(value => server.inject({
                 method: 'POST',
                 url: '/jobs',
-                body: {}
+                body: {
+                    url: 'http://example.org',
+                    interval: '5 minutes'
+                }
             })));
-            const responseNoPrev = await server.inject({
+            const response = await server.inject({
                 method: 'GET',
                 url: '/jobs?page=1&pageSize=2'
             });
-            const payloadResponseNoPrev = JSON.parse(responseNoPrev.payload);
-            expect(payloadResponseNoPrev.prev).toBeUndefined();
-            expect(payloadResponseNoPrev.next).toBe('http://localhost:8888/jobs?page=2&pageSize=2');
+            const payloadResponse = JSON.parse(response.payload);
+            expect(payloadResponse.prev).toBeUndefined();
+            expect(payloadResponse.next).toBe('http://localhost:8888/jobs?page=2&pageSize=2');
         });
 
         it('should not set next and not prev link in first page when jobs returned are lower than page size', async () => {
@@ -64,17 +70,17 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: 'a job ' + value,
-                    url: 'http://example.org'
+                    url: 'http://example.org',
+                    interval: '5 minutes'
                 }
             })));
-            const responseNoPrev = await server.inject({
+            const response = await server.inject({
                 method: 'GET',
                 url: '/jobs?page=1&pageSize=3'
             });
-            const payloadResponseNoPrev = JSON.parse(responseNoPrev.payload);
-            expect(payloadResponseNoPrev.prev).toBeUndefined();
-            expect(payloadResponseNoPrev.next).toBeUndefined();
+            const payloadResponse = JSON.parse(response.payload);
+            expect(payloadResponse.prev).toBeUndefined();
+            expect(payloadResponse.next).toBeUndefined();
         });
 
         it('should set next and prev link if a middle page', async () => {
@@ -82,17 +88,17 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: 'a job ' + value,
-                    url: 'http://example.org'
+                    url: 'http://example.org',
+                    interval: '5 minutes'
                 }
             })));
-            const responseNoPrev = await server.inject({
+            const response = await server.inject({
                 method: 'GET',
                 url: '/jobs?page=2&pageSize=2'
             });
-            const payloadResponseNoPrev = JSON.parse(responseNoPrev.payload);
-            expect(payloadResponseNoPrev.prev).toBe('http://localhost:8888/jobs?page=1&pageSize=2');
-            expect(payloadResponseNoPrev.next).toBe('http://localhost:8888/jobs?page=3&pageSize=2');
+            const payloadResponse = JSON.parse(response.payload);
+            expect(payloadResponse.prev).toBe('http://localhost:8888/jobs?page=1&pageSize=2');
+            expect(payloadResponse.next).toBe('http://localhost:8888/jobs?page=3&pageSize=2');
         });
 
         it('should return 400 with invalid page query string', async () => {
@@ -172,6 +178,16 @@ describe('jobs', () => {
             const response = await server.inject({
                 method: 'GET',
                 url: '/jobs/' + new ObjectId()
+            });
+            expect(response.statusCode).toBe(404);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ message: 'Resource not found' }));
+        });
+
+        it('should return 404 when job id is not a valid object id', async () => {
+            const response = await server.inject({
+                method: 'GET',
+                url: '/jobs/abc'
             });
             expect(response.statusCode).toBe(404);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
@@ -309,11 +325,19 @@ describe('jobs', () => {
         });
     });
 
-    describe.skip('delete', () => {
+    describe('delete', () => {
         it('should return 204 when job does not exist', async () => {
             const response = await server.inject({
                 method: 'DELETE',
                 url: '/jobs/' + new ObjectId()
+            });
+            expect(response.statusCode).toBe(204);
+        });
+
+        it('should return 204 when job id is not Object Id format', async () => {
+            const response = await server.inject({
+                method: 'DELETE',
+                url: '/jobs/abc'
             });
             expect(response.statusCode).toBe(204);
         });
@@ -323,8 +347,8 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
-                    name: 'a job',
-                    url: 'http://example.org'
+                    url: 'http://example.org',
+                    interval: '5 minutes'
                 }
             });
             expect(createResponse.statusCode).toBe(201);
@@ -339,7 +363,7 @@ describe('jobs', () => {
 
             const getResponse = await server.inject({
                 method: 'GET',
-                url: '/jobs' + createdJob.id
+                url: '/jobs/' + createdJob.id
             });
             expect(getResponse.statusCode).toBe(404);
         });

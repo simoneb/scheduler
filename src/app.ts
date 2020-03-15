@@ -6,7 +6,7 @@ import { buildJobsService } from './services/jobs-service';
 export async function buildApp(options) {
     const dbClient = await connect(options.databaseUrl);
     const db = await getAndSetupDatabase(dbClient, options.databaseName);
-    const agenda = getAndSetupAgenda(db);
+    const agenda = await getAndSetupAgenda(db);
     await agenda.start();
     const jobsService = buildJobsService(agenda);
     const server = buildServer(jobsService);
