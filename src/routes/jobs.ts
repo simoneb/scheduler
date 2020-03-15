@@ -4,14 +4,15 @@ import { JobsService } from '../services/jobs-service';
 
 const jobTargetSchema = {
     type: 'object',
+    additionalProperties: false,
     required: ['url', 'method'],
     properties: {
         url: { type: 'string', format: 'url' },
         method: {
             type: 'string',
-            enum: ['GET','POST','PATCH','PUT','DELETE']
+            enum: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
         },
-        headers: { 
+        headers: {
             type: 'object',
             additionalProperties: { type: 'string' }
         },
@@ -24,6 +25,7 @@ const jobTargetSchema = {
 
 const jobSchema = {
     type: 'object',
+    additionalProperties: false,
     properties: {
         id: { type: 'string' },
         interval: { type: 'string' },
@@ -91,6 +93,7 @@ const createSchema = {
     tags: ['jobs'],
     body: {
         type: 'object',
+        additionalProperties: false,
         required: ['interval', 'target'],
         properties: {
             interval: { type: 'string' },

@@ -358,6 +358,27 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.headers[\'a\'] should be string' }));
         });
 
+        it('should return 400 when target.body is set but method is GET', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET',
+                        body: {
+                            a: 3,
+                            d: 'hi'
+                        }
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.body cannot be set when method is GET' }));
+        });
+
         it('should return 201 with created job when request is valid', async () => {
             const response = await server.inject({
                 method: 'POST',

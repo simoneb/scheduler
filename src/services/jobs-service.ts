@@ -3,6 +3,7 @@ import Agenda from 'agenda';
 import { ObjectId } from 'mongodb';
 import { Job } from '../models/job';
 import { jobProcessingHandler } from '../agenda';
+import InvalidOperationError from '../errors/invalid-operation-error';
 
 export type JobsService = {
     list(page: number, pageSize: number): Promise<Job[]>;
@@ -20,6 +21,9 @@ export function buildJobsService(agenda: Agenda): JobsService {
         },
         async create(job: Job): Promise<Job> {
             const { interval, target } = job;
+            if (target.method === 'GET' && target.body) {
+                throw new InvalidOperationError('body.target.body cannot be set when method is GET');
+            }
             const jobName = new ObjectId().toHexString();
             agenda.define(jobName, jobProcessingHandler);
             const createdJob = await agenda.every(interval, jobName, target);
