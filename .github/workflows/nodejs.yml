@@ -33,7 +33,7 @@ jobs:
     - run: npm run test-ci
     - name: Publish Code Coverage
       uses: codecov/codecov-action@v1
-    ‐ name: Docker Build and Publish
+    - name: Docker Build and Publish
       uses: docker/build-push-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
