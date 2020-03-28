@@ -50,5 +50,6 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         source: "./deploy/charts/**"
         target: "./charts/tribeca-scheduler"
+        strip_components: 1
       env:
         CI: true
