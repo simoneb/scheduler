@@ -9,7 +9,7 @@ spec:
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 30706
+      nodePort: 30702
       name: tcp
   selector:
     run: tribeca-scheduler
