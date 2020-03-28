@@ -19,21 +19,29 @@ jobs:
     steps:
     - name: Git checkout
       uses: actions/checkout@v1
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
     - name: Start MongoDB v${{ matrix.mongodb-version }}
       uses: superchargejs/mongodb-github-action@1.1.0
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
+
     - run: npm ci
+    
     - run: npm run build --if-present
+    
     - run: npm run lint
+    
     - run: npm run test-ci
+    
     - name: Publish Code Coverage
       if: github.ref == 'refs/heads/master'
       uses: codecov/codecov-action@v1
+    
     - name: Docker Build and Publish
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v1
@@ -43,6 +51,7 @@ jobs:
         repository: francescorivola/tribeca-scheduler
         tag_with_ref: true
         tag_with_sha: true
+    
     - name: Copy Helm Chart via ssh
       if: github.ref == 'refs/heads/master'
       uses: appleboy/scp-action@master
@@ -54,6 +63,7 @@ jobs:
         source: "./charts/**"
         target: "./charts/tribeca-scheduler"
         strip_components: 1
+    
     - name: Deploy using Helm
       if: github.ref == 'refs/heads/master'
       uses: appleboy/ssh-action@master
@@ -63,5 +73,6 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: helm upgrade tribeca-scheduler ./charts/tribeca-scheduler --set image=francescorivola/tribeca-scheduler:sha-$(echo ${{ github.sha }} | cut -c1-7) --set deployment.env.externalHttpHost=${{ secrets.EXTERNAL_HTTP_HOST}} --install --wait
+      
       env:
         CI: true
