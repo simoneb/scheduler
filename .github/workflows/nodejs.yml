@@ -62,6 +62,6 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        script: helm upgrade tribeca-scheduler ./charts/tribeca-scheduler --set image=francescorivola/tribeca-scheduler:sha-$(echo ${{ env.GITHUB_SHA }} | cut -c1-7) --set deployment.env.externalHttpHost=${{ secrets.EXTERNAL_HTTP_HOST}} --install --wait
+        script: helm upgrade tribeca-scheduler ./charts/tribeca-scheduler --set image=francescorivola/tribeca-scheduler:sha-$(echo ${{ github.sha }} | cut -c1-7) --set deployment.env.externalHttpHost=${{ secrets.EXTERNAL_HTTP_HOST}} --install --wait
       env:
         CI: true
