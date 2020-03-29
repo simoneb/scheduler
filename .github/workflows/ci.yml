@@ -20,15 +20,15 @@ jobs:
     - name: Git checkout
       uses: actions/checkout@v1
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-
     - name: Start MongoDB v${{ matrix.mongodb-version }}
       uses: superchargejs/mongodb-github-action@1.1.0
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build --if-present
     - run: npm run lint
@@ -44,7 +44,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: francescorivola/tribeca-scheduler
+        repository: ${{ env.IMAGE_NAME }}
         tag_with_ref: true
         tag_with_sha: true
 
@@ -68,7 +68,8 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        script: helm upgrade tribeca-scheduler ./charts/tribeca-scheduler --set image=francescorivola/tribeca-scheduler:sha-$(echo ${{ github.sha }} | cut -c1-7) --set deployment.env.externalHttpHost=${{ secrets.EXTERNAL_HTTP_HOST}} --install --wait
+        script: helm upgrade tribeca-scheduler ./charts/tribeca-scheduler --set image=${{ env.IMAGE_NAME }}:sha-$(echo ${{ github.sha }} | cut -c1-7) --set deployment.env.externalHttpHost=${{ secrets.EXTERNAL_HTTP_HOST}} --install --wait
 
       env:
         CI: true
+        IMAGE_NAME: francescorivola/tribeca-scheduler
