@@ -62,8 +62,9 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         source: "./charts/**"
-        target: "./charts/$SERVICE_NAME"
+        target: "./charts/${{ env.SERVICE_NAME }}"
         strip_components: 1
+        rm: true
 
     - name: Deploy using Helm
       if: github.ref == 'refs/heads/master'
