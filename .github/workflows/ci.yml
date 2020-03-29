@@ -12,6 +12,7 @@ jobs:
     env:
       CI: true
       IMAGE_NAME: francescorivola/tribeca-scheduler
+      SERVICE_NAME: tribeca-scheduler
 
     runs-on: ubuntu-latest
 
@@ -61,7 +62,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         source: "./charts/**"
-        target: "./charts/tribeca-scheduler"
+        target: "./charts/$SERVICE_NAME"
         strip_components: 1
 
     - name: Deploy using Helm
@@ -72,4 +73,4 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        script: helm upgrade tribeca-scheduler ./charts/tribeca-scheduler --set image=${{ env.IMAGE_NAME }}:sha-$(echo ${{ github.sha }} | cut -c1-7) --set deployment.env.externalHttpHost=${{ secrets.EXTERNAL_HTTP_HOST}} --install --wait
+        script: helm upgrade ${{ env.SERVICE_NAME }} ./charts/${{ env.SERVICE_NAME }} --set image=${{ env.IMAGE_NAME }}:sha-$(echo ${{ github.sha }} | cut -c1-7) --set deployment.env.externalHttpHost=${{ secrets.EXTERNAL_HTTP_HOST}} --install --wait
