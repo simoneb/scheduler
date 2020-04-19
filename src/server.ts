@@ -63,6 +63,7 @@ export function buildServer(jobsService) {
 		} else {
 			request.log.error(error);
 		}
+		console.log(error);
 		reply.status(error.statusCode ?? 500).send(error);
 	});
 

@@ -27,6 +27,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -55,6 +56,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -76,6 +78,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -97,6 +100,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -211,6 +215,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -234,11 +239,56 @@ describe('jobs', () => {
     });
 
     describe('post', () => {
+        it('should return 400 when type is undefined', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    type: undefined,
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'apiKey 123'
+                        },
+                        body: {}
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'type\'' }));
+        });
+
+        it('should return 400 when type is undefined', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    type: 'unknown type',
+                    interval: '5 minutes',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'apiKey 123'
+                        },
+                        body: {}
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.type should be equal to one of the allowed values' }));
+        });
+
         it('should return 400 when interval is undefined', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: undefined,
                     target: {
                         url: 'https://example.org',
@@ -252,7 +302,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'interval\'' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'interval\' when body.type is \'every\'' }));
         });
 
         it('should return 400 when target is undefined', async () => {
@@ -260,6 +310,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: undefined
                 }
@@ -274,6 +325,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: undefined,
@@ -291,6 +343,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'a non valid url',
@@ -308,6 +361,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -325,6 +379,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -343,6 +398,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -363,6 +419,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -379,11 +436,30 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.body cannot be set when method is GET' }));
         });
 
-        it('should return 201 with created job when request is valid', async () => {
+        it.skip('should return 400 when interval is in an invalid format', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
+                    interval: 'bla bla bla',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.body cannot be set when method is GET' }));
+        });
+
+        it('should return 201 with created job when type is every and interval is valid', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',
@@ -403,6 +479,46 @@ describe('jobs', () => {
             const job = JSON.parse(response.payload);
             expect(response.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
             expect(job.interval).toBe('5 minutes');
+            expect(job.target.url).toBe('https://example.org');
+            expect(job.target.method).toBe('POST');
+            expect(job.target.headers).toStrictEqual({
+                'Authorization': 'apiKey 123456',
+                'X-Header': 'hi'
+            });
+            expect(job.target.body).toStrictEqual({
+                message: 'hello world'
+            });
+            expect(ObjectId.isValid(job.id)).toBe(true);
+        });
+
+        it('should return 201 with created job when type is once and when is a Date', async () => {
+            const date = new Date();
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    type: 'once',
+                    when: date.toISOString(),
+                    target: {
+                        url: 'https://example.org',
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'apiKey 123456',
+                            'X-Header': 'hi'
+                        },
+                        body: {
+                            message: 'hello world'
+                        }
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(201);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            const job = JSON.parse(response.payload);
+            expect(response.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
+            expect(job.type).toBe('once');
+            expect(job.interval).toBe(undefined);
+            expect(job.when).toBe(date.toISOString());
             expect(job.target.url).toBe('https://example.org');
             expect(job.target.method).toBe('POST');
             expect(job.target.headers).toStrictEqual({
@@ -438,6 +554,7 @@ describe('jobs', () => {
                 method: 'POST',
                 url: '/jobs',
                 body: {
+                    type: 'every',
                     interval: '5 minutes',
                     target: {
                         url: 'https://example.org',

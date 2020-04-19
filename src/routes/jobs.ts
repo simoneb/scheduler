@@ -28,7 +28,9 @@ const jobSchema = {
     additionalProperties: false,
     properties: {
         id: { type: 'string' },
+        type: { type: 'string', enum: ['every', 'once' ] },
         interval: { type: 'string' },
+        when: { type: 'string', format: 'date-time' },
         nextRunAt: { type: 'string' },
         target: jobTargetSchema
     }
@@ -94,9 +96,11 @@ const createSchema = {
     body: {
         type: 'object',
         additionalProperties: false,
-        required: ['interval', 'target'],
+        required: ['type', 'target'],
         properties: {
+            type: { type: 'string', enum: ['every', 'once' ] },
             interval: { type: 'string' },
+            when: { type: 'string', format: 'date-time' },
             target: jobTargetSchema
         }
     },
