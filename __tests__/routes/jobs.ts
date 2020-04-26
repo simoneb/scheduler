@@ -261,7 +261,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'type\'' }));
         });
 
-        it('should return 400 when type is undefined', async () => {
+        it('should return 400 when type is unknown', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
