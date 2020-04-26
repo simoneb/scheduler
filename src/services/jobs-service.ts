@@ -2,7 +2,6 @@ import { toDto } from '../utils/dto';
 import Agenda from 'agenda';
 import { ObjectId } from 'mongodb';
 import { Job } from '../models/job';
-import { jobProcessingHandler } from '../agenda';
 import InvalidOperationError from '../errors/invalid-operation-error';
 import { EveryJob } from '../models/every-job';
 import { OnceJob } from '../models/once-job';
@@ -35,7 +34,7 @@ function isOnceJob(job: Job): job is OnceJob {
     return job.type === 'once';
 }
 
-export function buildJobsService(agenda: Agenda): JobsService {
+export function buildJobsService(agenda: Agenda, jobExecutionHandler: (job:Agenda.Job, done: () => void) => void): JobsService {
 
     return {
         async list(page: number, pageSize: number): Promise<Job[]> {
@@ -48,14 +47,14 @@ export function buildJobsService(agenda: Agenda): JobsService {
                 case 'once': {
                     const jobName = new ObjectId().toHexString();
                     const createdJob = await agenda.schedule(new Date(job.when), jobName, job.target);
-                    agenda.define(jobName, jobProcessingHandler);
+                    agenda.define(jobName, jobExecutionHandler);
                     return toDto(createdJob);
                 }
                 case 'every':
                 default: {
                     const jobName = new ObjectId().toHexString();
                     const createdJob = await agenda.every(job.interval, jobName, job.target);
-                    agenda.define(jobName, jobProcessingHandler);
+                    agenda.define(jobName, jobExecutionHandler);
                     return toDto(createdJob);
                 }
             }
