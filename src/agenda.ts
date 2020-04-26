@@ -1,6 +1,7 @@
 import { Db } from 'mongodb';
 import Agenda from 'agenda';
 import * as os from 'os';
+import logger from './logger';
 
 export async function getAndSetupAgenda(db: Db): Promise<Agenda> {
     const agenda = new Agenda({
@@ -17,7 +18,9 @@ async function defineJobs(agenda: Agenda): Promise<void> {
     jobs.forEach(j => agenda.define(j.attrs.name, jobProcessingHandler));
 }
 
-export function jobProcessingHandler(job, done) {
-    console.log(new Date(), job);
+export function jobProcessingHandler(job: Agenda.Job, done: () => void): void {
+    const {_id } = job.attrs;
+    logger.info('Running job', _id);
+    logger.info('Ran job successfully', _id);
     done();
 }
