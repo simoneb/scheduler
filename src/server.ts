@@ -7,8 +7,11 @@ import InvalidOperationError from './errors/invalid-operation-error';
 import { buildAdminRoutes } from './routes/admin/admin';
 import logger from './logger';
 import { buildJobsRoutes } from './routes/jobs';
+import { JobsService } from './services/jobs-service';
+import { JobsExecutionsService } from './services/jobs-executions-service';
+import { buildJobsExecutionsRoutes } from './routes/jobs-executions';
 
-export function buildServer(jobsService) {
+export function buildServer(jobsService: JobsService, jobsExecutionsService: JobsExecutionsService) {
 	const app = fastify({
 		logger,
 		trustProxy: config.trustedProxy
@@ -41,6 +44,7 @@ export function buildServer(jobsService) {
 	// End points
 	app.register(buildAdminRoutes(), { prefix: '/admin' });
 	app.register(buildJobsRoutes(jobsService), { prefix: '/jobs' });
+	app.register(buildJobsExecutionsRoutes(jobsExecutionsService), { prefix: '/jobs-executions' });
 
 	app.setNotFoundHandler(function(request, reply) {
 		// Default not found handler with preValidation and preHandler hooks

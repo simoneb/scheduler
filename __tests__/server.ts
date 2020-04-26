@@ -1,4 +1,3 @@
-jest.mock('pino');
 import config from '../src/config';
 import { ObjectId } from 'bson';
 import { buildApp } from '../src/app';

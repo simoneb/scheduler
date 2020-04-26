@@ -1,4 +1,3 @@
-jest.mock('pino');
 import { ObjectId } from 'mongodb';
 import config from '../../src/config';
 import { buildApp } from '../../src/app';

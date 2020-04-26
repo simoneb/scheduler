@@ -9,8 +9,8 @@
     "start-dev": "cd src && ts-node main.ts --inspect=0.0.0.0:9229",
     "start-watch": "nodemon -L src/main.ts --inspect=0.0.0.0:9229 --exec ts-node",
     "lint": "eslint . --ext .ts",
-    "test": "jest --watchAll",
-    "test-ci": "jest --collect-coverage",
+    "test": "LOG_LEVEL=fatal jest --watchAll",
+    "test-ci": "LOG_LEVEL=fatal jest --collect-coverage",
     "publish-code-coverage": "codecov"
   },
   "repository": {

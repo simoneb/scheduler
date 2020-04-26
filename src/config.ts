@@ -61,6 +61,12 @@ const config = convict({
             env: 'MONGODB_DATABASE_NAME'
         }
     },
+    logLevel: {
+        doc: 'Log level.',
+        format: String,
+        default: 'info',
+        env: 'LOG_LEVEL',
+    }
 });
 
 config.validate({ allowed: 'strict' });
