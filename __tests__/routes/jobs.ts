@@ -283,28 +283,6 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.type should be equal to one of the allowed values' }));
         });
 
-        it('should return 400 when interval is undefined', async () => {
-            const response = await server.inject({
-                method: 'POST',
-                url: '/jobs',
-                body: {
-                    type: 'every',
-                    interval: undefined,
-                    target: {
-                        url: 'https://example.org',
-                        method: 'POST',
-                        headers: {
-                            'Authorization': 'apiKey 123'
-                        },
-                        body: {}
-                    }
-                }
-            });
-            expect(response.statusCode).toBe(400);
-            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'interval\' when body.type is \'every\'' }));
-        });
-
         it('should return 400 when target is undefined', async () => {
             const response = await server.inject({
                 method: 'POST',
@@ -436,7 +414,65 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.body cannot be set when method is GET' }));
         });
 
-        it.skip('should return 400 when interval is in an invalid format', async () => {
+        it('should return 400 when type is once and when is undefined', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    type: 'once',
+                    when: undefined,
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'when\' when body.type is \'once\'' }));
+        });
+
+        it('should return 400 when type is once and when is not a date', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    type: 'once',
+                    when: 'bla bla bla',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'GET'
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.when should match format "date-time"' }));
+        });
+
+        it('should return 400 when type is every and interval is undefined', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    type: 'every',
+                    interval: undefined,
+                    target: {
+                        url: 'https://example.org',
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'apiKey 123'
+                        },
+                        body: {}
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'interval\' when body.type is \'every\'' }));
+        });
+
+        it.skip('should return 400 when type is every and interval is in an invalid format', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',

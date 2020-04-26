@@ -5,6 +5,7 @@ import { Job } from '../models/job';
 import { jobProcessingHandler } from '../agenda';
 import InvalidOperationError from '../errors/invalid-operation-error';
 import { EveryJob } from '../models/every-job';
+import { OnceJob } from '../models/once-job';
 
 export type JobsService = {
     list(page: number, pageSize: number): Promise<Job[]>;
@@ -21,10 +22,17 @@ function assertJobIsValid(job: Job) {
     if (isEveryJob(job) && !job.interval) {
         throw new InvalidOperationError('body should have required property \'interval\' when body.type is \'every\'');
     }
+    if (isOnceJob(job) && !job.when) {
+        throw new InvalidOperationError('body should have required property \'when\' when body.type is \'once\'');
+    }
 }
 
 function isEveryJob(job: Job): job is EveryJob {
     return job.type === 'every';
+}
+
+function isOnceJob(job: Job): job is OnceJob {
+    return job.type === 'once';
 }
 
 export function buildJobsService(agenda: Agenda): JobsService {
