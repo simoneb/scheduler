@@ -12,7 +12,7 @@ export default function buildJobExecutionHandler(): (job:Agenda.Job, done: (erro
             method,
             headers: {
                 ...headers,
-                ...(body ?  { 'Content-Type': 'application/json' } : {}),
+                ...(body ? { 'Content-Type': 'application/json' } : {}),
                 ...{
                     'X-Scheduler-Id': _id.toHexString(),
                     'X-Scheduler-Interval': (repeatInterval ?? '').toString()
@@ -31,6 +31,6 @@ export default function buildJobExecutionHandler(): (job:Agenda.Job, done: (erro
         jobExecutionHandlerInternal(job, done).catch(error => {
             logger.error(error, job.attrs._id);
             done(error);
-        })
+        });
     };
 }
