@@ -28,7 +28,8 @@ export function buildServer(jobsService) {
 				description: 'Find more info here'
 			},
 			tags: [
-				{ name: 'system', description: 'System related end-points' }
+				{ name: 'system', description: 'System related end-points' },
+				{ name: 'jobs', description: 'Jobs related end-points' }
 			],
 			host: config.externalHttp.host + (config.externalHttp.port ? ':' + config.externalHttp.port : ''),
 			schemes: [config.externalHttp.protocol],
