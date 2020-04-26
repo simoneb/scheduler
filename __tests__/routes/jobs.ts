@@ -28,7 +28,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET'
@@ -57,7 +57,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET'
@@ -79,7 +79,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET'
@@ -101,7 +101,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET'
@@ -216,7 +216,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET'
@@ -245,7 +245,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: undefined,
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'POST',
@@ -267,7 +267,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'unknown type',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'POST',
@@ -289,7 +289,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: undefined
                 }
             });
@@ -304,7 +304,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: undefined,
                         method: 'GET'
@@ -322,7 +322,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'a non valid url',
                         method: 'GET'
@@ -340,7 +340,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GUT'
@@ -358,7 +358,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET',
@@ -377,7 +377,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET',
@@ -398,7 +398,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET',
@@ -472,7 +472,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'interval\' when body.type is \'every\'' }));
         });
 
-        it.skip('should return 400 when type is every and interval is in an invalid format', async () => {
+        it('should return 400 when type is every and interval is in an invalid format', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
@@ -487,7 +487,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.body cannot be set when method is GET' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.interval should match pattern "^(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(/|-)\\d+)|\\d+|\\*) ?){5,7})$"' }));
         });
 
         it('should return 201 with created job when type is every and interval is valid', async () => {
@@ -496,7 +496,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'POST',
@@ -514,7 +514,7 @@ describe('jobs', () => {
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
             const job = JSON.parse(response.payload);
             expect(response.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
-            expect(job.interval).toBe('5 minutes');
+            expect(job.interval).toBe('*/5 * * * *');
             expect(job.target.url).toBe('https://example.org');
             expect(job.target.method).toBe('POST');
             expect(job.target.headers).toStrictEqual({
@@ -591,7 +591,7 @@ describe('jobs', () => {
                 url: '/jobs',
                 body: {
                     type: 'every',
-                    interval: '5 minutes',
+                    interval: '*/5 * * * *',
                     target: {
                         url: 'https://example.org',
                         method: 'GET'

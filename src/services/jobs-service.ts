@@ -47,7 +47,7 @@ export function buildJobsService(agenda: Agenda): JobsService {
             switch (job.type) {
                 case 'once': {
                     const jobName = new ObjectId().toHexString();
-                    const createdJob = await agenda.schedule(job.when, jobName, job.target);
+                    const createdJob = await agenda.schedule(new Date(job.when), jobName, job.target);
                     agenda.define(jobName, jobProcessingHandler);
                     return toDto(createdJob);
                 }
