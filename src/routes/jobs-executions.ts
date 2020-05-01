@@ -18,7 +18,7 @@ const listSchema = {
     querystring: {
         page: { type: 'integer', minimum: 1, default: 1 },
         pageSize: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-        jobId: { type: 'string' }
+        jobId: { type: 'string', pattern: '^[a-f0-9]{24}$', errorMessage: 'should be a valid ObjectId' }
     },
     response: {
         200: {

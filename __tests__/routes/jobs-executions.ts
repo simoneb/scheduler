@@ -52,6 +52,7 @@ describe('jobs-executions', () => {
     }
 
     describe('get', () => {
+
         it('should return 200 with array of jobs executions', async () => {
             const jobId = new ObjectId();
 
@@ -230,7 +231,7 @@ describe('jobs-executions', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'jobId format is invalid'
+                message: 'querystring/jobId should be a valid ObjectId'
             }));
         });
     });
