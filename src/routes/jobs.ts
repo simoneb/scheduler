@@ -57,17 +57,21 @@ const listSchema = {
     }
 };
 
+const jobIdParam = {
+    type: 'object',
+    properties: {
+      id: {
+        type: 'string',
+        description: 'job identifier',
+        pattern: '^[a-f0-9]{24}$'
+      }
+    },
+    errorMessage: 'job id must be a valid ObjectId'
+};
+
 const getSchema = {
     tags: ['jobs'],
-    params: {
-        type: 'object',
-        properties: {
-          id: {
-            type: 'string',
-            description: 'job identifier'
-          }
-        }
-    },
+    params: jobIdParam,
     response: {
         200: jobSchema
     }
@@ -75,15 +79,7 @@ const getSchema = {
 
 const deleteSchema = {
     tags: ['jobs'],
-    params: {
-        type: 'object',
-        properties: {
-          id: {
-            type: 'string',
-            description: 'job identifier'
-          }
-        }
-    },
+    params: jobIdParam,
     response: {
         204: {
             type: 'object'

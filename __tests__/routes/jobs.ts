@@ -189,20 +189,20 @@ describe('jobs', () => {
 
     describe('get by id', () => {
 
+        it('should return 400 when job identifier is not a valid ObjectId', async () => {
+            const response = await server.inject({
+                method: 'GET',
+                url: '/jobs/invalid-object-id-here'
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'params job id must be a valid ObjectId' }));
+        });
+
         it('should return 404 when job does not exists', async () => {
             const response = await server.inject({
                 method: 'GET',
                 url: '/jobs/' + new ObjectId()
-            });
-            expect(response.statusCode).toBe(404);
-            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ message: 'Resource not found' }));
-        });
-
-        it('should return 404 when job id is not a valid object id', async () => {
-            const response = await server.inject({
-                method: 'GET',
-                url: '/jobs/abc'
             });
             expect(response.statusCode).toBe(404);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
@@ -568,18 +568,21 @@ describe('jobs', () => {
     });
 
     describe('delete', () => {
+
+        it('should return 400 when job identifier is not a valid ObjectId', async () => {
+            const response = await server.inject({
+                method: 'DELETE',
+                url: '/jobs/invalid-object-id-here'
+            });
+            expect(response.statusCode).toBe(400);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'params job id must be a valid ObjectId' }));
+        });
+
         it('should return 204 when job does not exist', async () => {
             const response = await server.inject({
                 method: 'DELETE',
                 url: '/jobs/' + new ObjectId()
-            });
-            expect(response.statusCode).toBe(204);
-        });
-
-        it('should return 204 when job id is not Object Id format', async () => {
-            const response = await server.inject({
-                method: 'DELETE',
-                url: '/jobs/abc'
             });
             expect(response.statusCode).toBe(204);
         });
