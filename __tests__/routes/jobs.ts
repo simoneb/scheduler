@@ -486,7 +486,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/interval should match pattern "^(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(/|-)\\d+)|\\d+|\\*) ?){5,7})$"' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/interval should be a valid cron scheduler expression' }));
         });
 
         it('should return 201 with created job when type is every and interval is valid', async () => {
