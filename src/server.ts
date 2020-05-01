@@ -10,12 +10,25 @@ import { buildJobsRoutes } from './routes/jobs';
 import { JobsService } from './services/jobs-service';
 import { JobsExecutionsService } from './services/jobs-executions-service';
 import { buildJobsExecutionsRoutes } from './routes/jobs-executions';
+import Ajv from 'ajv';
+import AjvErrors from 'ajv-errors';
 
 export function buildServer(jobsService: JobsService, jobsExecutionsService: JobsExecutionsService) {
 	const app = fastify({
 		logger,
 		trustProxy: config.trustedProxy
 	});
+
+	const ajv = new Ajv({
+		removeAdditional: true,
+		useDefaults: true,
+		coerceTypes: true,
+		allErrors: true,
+		nullable: true,
+		jsonPointers: true
+	});
+	AjvErrors(ajv);
+	app.setSchemaCompiler(schema => ajv.compile(schema));
 
 	app.register(fastifySwagger, {
 		routePrefix: '/documentation',

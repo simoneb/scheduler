@@ -16,13 +16,13 @@ export type JobsService = {
 function assertJobIsValid(job: Job) {
     const { target } = job;
     if (target.method === 'GET' && target.body) {
-        throw new InvalidOperationError('body.target.body cannot be set when method is GET');
+        throw new InvalidOperationError('body/target/body cannot be set when method is GET');
     }
     if (isEveryJob(job) && !job.interval) {
-        throw new InvalidOperationError('body should have required property \'interval\' when body.type is \'every\'');
+        throw new InvalidOperationError('body should have required property \'interval\' when body/type is \'every\'');
     }
     if (isOnceJob(job) && !job.when) {
-        throw new InvalidOperationError('body should have required property \'when\' when body.type is \'once\'');
+        throw new InvalidOperationError('body should have required property \'when\' when body/type is \'once\'');
     }
 }
 

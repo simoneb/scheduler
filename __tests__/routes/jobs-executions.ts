@@ -160,7 +160,7 @@ describe('jobs-executions', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.page should be integer'
+                message: 'querystring/page should be integer'
             }));
         });
 
@@ -174,7 +174,7 @@ describe('jobs-executions', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.pageSize should be integer'
+                message: 'querystring/pageSize should be integer'
             }));
         });
 
@@ -188,7 +188,7 @@ describe('jobs-executions', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.pageSize should be <= 100'
+                message: 'querystring/pageSize should be <= 100'
             }));
         });
 
@@ -202,7 +202,7 @@ describe('jobs-executions', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.pageSize should be >= 1'
+                message: 'querystring/pageSize should be >= 1'
             }));
         });
 
@@ -216,7 +216,7 @@ describe('jobs-executions', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.page should be >= 1'
+                message: 'querystring/page should be >= 1'
             }));
         });
 

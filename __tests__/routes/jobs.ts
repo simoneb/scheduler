@@ -126,7 +126,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.page should be integer'
+                message: 'querystring/page should be integer'
             }));
         });
 
@@ -140,7 +140,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.pageSize should be integer'
+                message: 'querystring/pageSize should be integer'
             }));
         });
 
@@ -154,7 +154,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.pageSize should be <= 100'
+                message: 'querystring/pageSize should be <= 100'
             }));
         });
 
@@ -168,7 +168,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.pageSize should be >= 1'
+                message: 'querystring/pageSize should be >= 1'
             }));
         });
 
@@ -182,7 +182,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({
                 statusCode: 400,
                 error: 'Bad Request',
-                message: 'querystring.page should be >= 1'
+                message: 'querystring/page should be >= 1'
             }));
         });
     });
@@ -279,7 +279,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.type should be equal to one of the allowed values' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/type should be equal to one of the allowed values' }));
         });
 
         it('should return 400 when target is undefined', async () => {
@@ -297,7 +297,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'target\'' }));
         });
 
-        it('should return 400 when target.url is undefined', async () => {
+        it('should return 400 when target/url is undefined', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
@@ -312,10 +312,10 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target should have required property \'url\'' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/target should have required property \'url\'' }));
         });
 
-        it('should return 400 when target.url is not valid', async () => {
+        it('should return 400 when target/url is not valid', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
@@ -330,10 +330,10 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.url should match format "url"' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/target/url should match format "url"' }));
         });
 
-        it('should return 400 when target.method is not GET, POST, PATCH, PUT nor DELETE', async () => {
+        it('should return 400 when target/method is not GET, POST, PATCH, PUT nor DELETE', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
@@ -348,10 +348,10 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.method should be equal to one of the allowed values' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/target/method should be equal to one of the allowed values' }));
         });
 
-        it('should return 400 when target.header if not an object', async () => {
+        it('should return 400 when target/header if not an object', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
@@ -367,10 +367,10 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.headers should be object' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/target/headers should be object' }));
         });
 
-        it('should return 400 when target.header is not in form of string dictionary', async () => {
+        it('should return 400 when target/header is not in form of string dictionary', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
@@ -388,10 +388,10 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.headers[\'a\'] should be string' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/target/headers/a should be string' }));
         });
 
-        it('should return 400 when target.body is set but method is GET', async () => {
+        it('should return 400 when target/body is set but method is GET', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
@@ -410,7 +410,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.target.body cannot be set when method is GET' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/target/body cannot be set when method is GET' }));
         });
 
         it('should return 400 when type is once and when is undefined', async () => {
@@ -428,7 +428,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'when\' when body.type is \'once\'' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'when\' when body/type is \'once\'' }));
         });
 
         it('should return 400 when type is once and when is not a date', async () => {
@@ -446,7 +446,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.when should match format "date-time"' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/when should match format "date-time"' }));
         });
 
         it('should return 400 when type is every and interval is undefined', async () => {
@@ -468,7 +468,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'interval\' when body.type is \'every\'' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body should have required property \'interval\' when body/type is \'every\'' }));
         });
 
         it('should return 400 when type is every and interval is in an invalid format', async () => {
@@ -486,7 +486,7 @@ describe('jobs', () => {
             });
             expect(response.statusCode).toBe(400);
             expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
-            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body.interval should match pattern "^(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(/|-)\\d+)|\\d+|\\*) ?){5,7})$"' }));
+            expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/interval should match pattern "^(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(/|-)\\d+)|\\d+|\\*) ?){5,7})$"' }));
         });
 
         it('should return 201 with created job when type is every and interval is valid', async () => {

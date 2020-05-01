@@ -48,6 +48,8 @@
   },
   "dependencies": {
     "agenda": "^3.1.0",
+    "ajv": "^6.12.2",
+    "ajv-errors": "^1.0.1",
     "convict": "^5.2.0",
     "fastify": "^2.14.0",
     "fastify-swagger": "^2.5.1",
