@@ -151,6 +151,20 @@ describe('jobs-executions', () => {
             expect(payloadResponse.next).toBe('http://localhost:8888/jobs-executions?page=3&pageSize=2');
         });
 
+        it('should set next and prev link with jobId filter if a middle page filtered by jobId', async () => {
+            const jobId = new ObjectId();
+            await Promise.all([1, 2, 3, 4, 5].map(value => {
+                return executeJob(jobId, true, app.getJobExecutionHandler());
+            }));
+            const response = await server.inject({
+                method: 'GET',
+                url: `/jobs-executions?page=2&pageSize=2&jobId=${jobId}`
+            });
+            const payloadResponse = JSON.parse(response.payload);
+            expect(payloadResponse.prev).toBe(`http://localhost:8888/jobs-executions?page=1&pageSize=2&jobId=${jobId}`);
+            expect(payloadResponse.next).toBe(`http://localhost:8888/jobs-executions?page=3&pageSize=2&jobId=${jobId}`);
+        });
+
         it('should return 400 with invalid page query string', async () => {
             const response = await server.inject({
                 method: 'GET',
