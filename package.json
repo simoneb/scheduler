@@ -54,7 +54,7 @@
     "fastify": "^2.14.1",
     "fastify-swagger": "^2.6.0",
     "make-promises-safe": "^5.1.0",
-    "mongodb": "^3.5.7",
+    "mongodb": "^3.5.8",
     "node-fetch": "^2.6.0"
   }
 }
