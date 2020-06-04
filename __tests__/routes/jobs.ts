@@ -489,7 +489,7 @@ describe('jobs', () => {
             expect(response.payload).toBe(JSON.stringify({ statusCode: 400, error: 'Bad Request', message: 'body/interval should be a valid cron scheduler expression' }));
         });
 
-        it('should return 201 with created job when type is every and interval is valid', async () => {
+        it('should return 201 with created job when type is every and interval is a valid cron expression', async () => {
             const response = await server.inject({
                 method: 'POST',
                 url: '/jobs',
@@ -514,6 +514,43 @@ describe('jobs', () => {
             const job = JSON.parse(response.payload);
             expect(response.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
             expect(job.interval).toBe('*/5 * * * *');
+            expect(job.target.url).toBe('https://example.org');
+            expect(job.target.method).toBe('POST');
+            expect(job.target.headers).toStrictEqual({
+                'Authorization': 'apiKey 123456',
+                'X-Header': 'hi'
+            });
+            expect(job.target.body).toStrictEqual({
+                message: 'hello world'
+            });
+            expect(ObjectId.isValid(job.id)).toBe(true);
+        });
+
+        it('should return 201 with created job when type is every and interval is a valid human friendly interval', async () => {
+            const response = await server.inject({
+                method: 'POST',
+                url: '/jobs',
+                body: {
+                    type: 'every',
+                    interval: '@every 5s',
+                    target: {
+                        url: 'https://example.org',
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'apiKey 123456',
+                            'X-Header': 'hi'
+                        },
+                        body: {
+                            message: 'hello world'
+                        }
+                    }
+                }
+            });
+            expect(response.statusCode).toBe(201);
+            expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+            const job = JSON.parse(response.payload);
+            expect(response.headers.location).toBe(`http://localhost:8888/jobs/${job.id}`);
+            expect(job.interval).toBe('@every 5s');
             expect(job.target.url).toBe('https://example.org');
             expect(job.target.method).toBe('POST');
             expect(job.target.headers).toStrictEqual({
