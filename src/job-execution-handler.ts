@@ -41,7 +41,7 @@ export default function buildJobExecutionHandler(jobsExecutionsService: JobsExec
 
     return function jobExecutionHandler(job: Agenda.Job, done: (error?: Error) => void): void {
         jobExecutionHandlerInternal(job, done).catch(error => {
-            logger.error(error, job.attrs._id);
+            logger.error('Error running job', job.attrs._id, error);
             done(error);
         });
     };

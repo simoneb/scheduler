@@ -95,13 +95,13 @@ const createSchema = {
         required: ['type', 'target'],
         properties: {
             type: { type: 'string', enum: ['every', 'once' ] },
-            interval: { type: 'string', pattern: '^(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(s|m|h))+)|((((\\d+,)+\\d+|(\\d+(\/|-)\\d+)|\\d+|\\*) ?){5,7})$' },
+            interval: { type: 'string', pattern: '^(1 (second|minute|hour))|(?:[2-9]|\d\d\d* (seconds|minutes|hours))|((((\\d+,)+\\d+|(\\d+(\/|-)\\d+)|\\d+|\\*) ?){5,7})$' },
             when: { type: 'string', format: 'date-time' },
             target: jobTargetSchema
         },
         errorMessage: {
             properties: {
-                interval: 'should be a valid cron scheduler expression'
+                interval: 'should be a valid cron scheduler expression or human friendly interval expression'
             }
         }
     },
