@@ -7,7 +7,7 @@ const jobTargetSchema = {
     additionalProperties: false,
     required: ['url', 'method'],
     properties: {
-        url: { type: 'string', format: 'url' },
+        url: { type: 'string', format: 'uri' },
         method: {
             type: 'string',
             enum: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
