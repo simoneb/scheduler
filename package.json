@@ -51,7 +51,7 @@
     "ajv": "^6.12.2",
     "ajv-errors": "^1.0.1",
     "convict": "^6.0.0",
-    "fastify": "^2.14.1",
+    "fastify": "^2.15.0",
     "fastify-swagger": "^2.6.0",
     "make-promises-safe": "^5.1.0",
     "mongodb": "^3.5.9",
