@@ -22,12 +22,12 @@ function getPagedLink(path: string | null, page: number, pageSize: number, query
 
 export function getPrevLink(request) {
     const { page, pageSize, ...rest } = request.query;
-    const path = url.parse(request.raw.url).pathname;
+    const path = url.parse(request.url).pathname;
     return page !== 1 ? getPagedLink(path, page - 1, pageSize, rest) : undefined;
 }
 
 export function getNextLink(request, results) {
     const { page, pageSize, ...rest } = request.query;
-    const path = url.parse(request.raw.url).pathname;
+    const path = url.parse(request.url).pathname;
     return results.length === pageSize ? getPagedLink(path, page + 1, pageSize, rest) : undefined;
 }

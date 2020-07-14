@@ -139,7 +139,7 @@ export function buildJobsRoutes(jobsService: JobsService) {
 
     async function create(request, reply) {
         const job = await jobsService.create(request.body);
-        reply.header('Location', `${getExternalUrl(request.raw.originalUrl)}/${job.id}`);
+        reply.header('Location', `${getExternalUrl(request.url)}/${job.id}`);
         reply.status(201).send(job);
     }
 

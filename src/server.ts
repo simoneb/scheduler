@@ -28,7 +28,7 @@ export function buildServer(jobsService: JobsService, jobsExecutionsService: Job
 		jsonPointers: true
 	});
 	AjvErrors(ajv);
-	app.setSchemaCompiler(schema => ajv.compile(schema));
+	app.setValidatorCompiler(({ schema }) => ajv.compile(schema));
 
 	app.register(fastifySwagger, {
 		routePrefix: '/documentation',
