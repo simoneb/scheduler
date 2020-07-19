@@ -43,21 +43,19 @@ export function buildJobsService(agenda: Agenda, jobExecutionHandler: (job:Agend
         },
         async create(job: Job): Promise<Job> {
             assertJobIsValid(job);
+            const agendaJob = agenda.create('job', job.target);
             switch (job.type) {
                 case 'once': {
-                    const jobName = new ObjectId().toHexString();
-                    const createdJob = await agenda.schedule(new Date(job.when), jobName, job.target);
-                    agenda.define(jobName, jobExecutionHandler);
-                    return toDto(createdJob);
+                    agendaJob.schedule(new Date(job.when));
+                    break;
                 }
                 case 'every':
                 default: {
-                    const jobName = new ObjectId().toHexString();
-                    const createdJob = await agenda.every(job.interval, jobName, job.target);
-                    agenda.define(jobName, jobExecutionHandler);
-                    return toDto(createdJob);
+                    agendaJob.repeatEvery(job.interval);
                 }
             }
+            const createdJob = await agendaJob.save();
+            return toDto(createdJob);
         },
         async getById(id: string): Promise<Job> {
             const _id = ObjectId.isValid(id) ? ObjectId.createFromHexString(id) : id;
