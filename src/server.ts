@@ -11,6 +11,7 @@ import { JobsService } from './services/jobs-service';
 import { JobsExecutionsService } from './services/jobs-executions-service';
 import { buildJobsExecutionsRoutes } from './routes/jobs-executions';
 import Ajv from 'ajv';
+import addFormats from 'ajv-formats';
 import AjvErrors from 'ajv-errors';
 
 export function buildServer(jobsService: JobsService, jobsExecutionsService: JobsExecutionsService) {
@@ -23,10 +24,9 @@ export function buildServer(jobsService: JobsService, jobsExecutionsService: Job
 		removeAdditional: true,
 		useDefaults: true,
 		coerceTypes: true,
-		allErrors: true,
-		nullable: true,
-		jsonPointers: true
+		allErrors: true
 	});
+	addFormats(ajv);
 	AjvErrors(ajv);
 	app.setValidatorCompiler(({ schema }) => ajv.compile(schema));
 
