@@ -66,20 +66,20 @@ export function buildServer(jobsService: JobsService, jobsExecutionsService: Job
 
 	app.setErrorHandler((error, request, reply) => {
 		if (error instanceof NotFoundError) {
-			request.log.info(error);
+			request.log.info(error.message);
 			reply.status(404).send({ message: 'Resource not found' });
 			return;
 		}
 		if (error instanceof InvalidOperationError ||
 			error.validation) {
-			request.log.info(error);
+			request.log.info(error.message);
 			reply.status(400).send(error);
 			return;
 		}
 		if (error.statusCode && error.statusCode < 500) {
-			request.log.info(error);
+			request.log.info(error.message);
 		} else {
-			request.log.error(error);
+			request.log.error(error.message);
 		}
 		reply.status(error.statusCode ?? 500).send(error);
 	});
