@@ -31,7 +31,7 @@
     "@types/agenda": "^4.1.0",
     "@types/convict": "^5.2.2",
     "@types/jest": "^26.0.23",
-    "@types/mongodb": "^3.6.16",
+    "@types/mongodb": "^3.6.17",
     "@types/node": "^15.6.1",
     "@types/node-fetch": "^2.5.10",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
