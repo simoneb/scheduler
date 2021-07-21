@@ -29,7 +29,7 @@
   "homepage": "https://github.com/3beca/scheduler#readme",
   "devDependencies": {
     "@types/agenda": "^4.1.0",
-    "@types/convict": "^5.2.2",
+    "@types/convict": "^6.1.1",
     "@types/jest": "^26.0.24",
     "@types/mongodb": "^3.6.20",
     "@types/node": "^16.4.0",
